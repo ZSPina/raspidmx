@@ -2,7 +2,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2013 Andrew Duncan
+// Copyright (c) 2017 Federico Scozzafava
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the
@@ -44,6 +44,22 @@
 //-------------------------------------------------------------------------
 
 #define NDEBUG
+
+void updateInfo(IMAGE_LAYER_T *infoLayer)
+{
+    char buffer[128];
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    snprintf(buffer, sizeof(buffer),"now: %d-%d-%d %d:%d:%d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    
+    static RGBA8_T backgroundColour = { 0, 0, 0, 0 };
+    static RGBA8_T textColour = { 255, 255, 255, 255 };
+    IMAGE_T *image = &(infoLayer->image);
+    clearImageRGB(image, &backgroundColour);
+    int x = 100, y = 50;
+    drawStringRGB(x, y, buffer, &textColour, image);
+    changeSourceAndUpdateImageLayer(infoLayer);
+}
 
 //-------------------------------------------------------------------------
 
@@ -106,27 +122,18 @@ int main(int argc, char *argv[])
     assert(update != 0);
     
     addElementImageLayerOffset(&infoLayer,
-                               10,
-                               10,
+                               0,
+                               0,
                                display,
                                update);
-    time_t t = time(NULL);
-    struct tm tm = *localtime(&t);
-    char buffer[128];
-    snprintf(buffer, sizeof(buffer),"now: %d-%d-%d %d:%d:%d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
-    
-    static RGBA8_T backgroundColour = { 255, 255, 255, 255 };
-    static RGBA8_T textColour = { 0, 0, 0, 255 };
-    IMAGE_T *image = &(infoLayer.image);
-    clearImageRGB(image, &backgroundColour);
-    int x = 0, y = 0;
-    drawStringRGB(x, y, buffer, &textColour, image);
-    //updateInfo();
-    changeSourceAndUpdateImageLayer(&infoLayer);
     result = vc_dispmanx_update_submit_sync(update);
     assert(result == 0);
 
-    usleep(1000000);
+    while (keyPressed(NULL) == false)
+    {
+        usleep(100000);
+        updateInfo(&infoLayer);
+    }
     //---------------------------------------------------------------------
 
     result = vc_dispmanx_display_close(display);
@@ -140,4 +147,5 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
 
