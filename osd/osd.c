@@ -117,8 +117,8 @@ int main(int argc, char *argv[])
     
     static RGBA8_T backgroundColour = { 255, 255, 255, 255 };
     static RGBA8_T textColour = { 0, 0, 0, 255 };
+    IMAGE_T *image = &(infoLayer.image);
     clearImageRGB(image, &backgroundColour);
-    IMAGE_T *image = &(infoLayer->image);
     int x = 0, y = 0;
     drawStringRGB(x, y, buffer, &textColour, image);
     //updateInfo();
