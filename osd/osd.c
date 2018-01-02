@@ -114,13 +114,15 @@ int main(int argc, char *argv[])
     struct tm tm = *localtime(&t);
     char buffer[128];
     snprintf(buffer, sizeof(buffer),"now: %d-%d-%d %d:%d:%d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
-    clearImageRGB(image, &backgroundColour);
+    
     static RGBA8_T backgroundColour = { 255, 255, 255, 255 };
     static RGBA8_T textColour = { 0, 0, 0, 255 };
+    clearImageRGB(image, &backgroundColour);
     IMAGE_T *image = &(infoLayer->image);
+    int x = 0, y = 0;
     drawStringRGB(x, y, buffer, &textColour, image);
     //updateInfo();
-    changeSourceAndUpdateImageLayer(infoLayer);
+    changeSourceAndUpdateImageLayer(&infoLayer);
     result = vc_dispmanx_update_submit_sync(update);
     assert(result == 0);
 
