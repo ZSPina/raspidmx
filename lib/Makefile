@@ -22,7 +22,7 @@ all: $(LIB)
 
 $(LIB): $(OBJS)
 	$(AR) rcs lib$(LIB).a $(OBJS)
-	$(CC) -shared -Wl,-soname,lib$(LIB).so.1 $(LDFLAGS) -o lib$(LIB).so.1 $(OBJS)
+	#$(CC) -shared -Wl,-soname,lib$(LIB).so.1 $(LDFLAGS) -o lib$(LIB).so.1 $(OBJS)
 
 # TODO: move to debian package
 	ln -sfv lib$(LIB).so.1 lib$(LIB).so
